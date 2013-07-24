@@ -41,7 +41,7 @@ public class GameLoop implements Runnable{
 
 			// sleep for 0.05 seconds
 			try{
-				Thread.sleep(50l);
+				Thread.sleep((long)mainActivity.getSpeedvalue());
 			}catch(Exception e){
 				System.out.println("In game loop:"+ e);
 			}
