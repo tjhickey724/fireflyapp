@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.graphics.PointF;
+
 /**
  * This is a simple model for a game with objects that
  * move around the screen and the user needs to 
@@ -27,6 +29,8 @@ public class GameModel {
 	int numActive;
 
 	private Random rand = new Random();
+	
+	private PointF avatarMovement = new PointF(0f,0f);
 
 
 	public GameModel(float size, int numActors) {
@@ -58,7 +62,7 @@ public class GameModel {
 			this.actors.add(a);
 			a.speed = 1;
 			a.radius = 1;
-			if (numActive>this.numActors*0.9){
+			if (numActive> numActors-3){
 				a.species = Species.wasp;
 			}else{
 				a.species = Species.firefly;
@@ -76,7 +80,10 @@ public class GameModel {
 		paused = true;
 	}
 	
-
+	public void moveAvatar(PointF dp){
+		this.avatarMovement.x += dp.x;
+		this.avatarMovement.y += dp.y;
+	}
 	
 	/**
 	 * update moves all actors one step and if
@@ -88,17 +95,34 @@ public class GameModel {
 	public void update(){
 		if (paused || gameOver) return;
 		
+		
+		avatar.x += avatarMovement.x;
+		avatar.y += avatarMovement.y;
+		
+		
 		for(GameActor a:this.actors){
-			a.update();
-			if (a.active && intersects(a,avatar)) {
-				a.active=false;
-				numActive--;
-				if (a.species==Species.wasp){
-					initActors(); // you lose and have to restart!
+			if (a.active) {
+				a.update();
+				keepOnBoard(a);
+				if (intersects(a,avatar)) {
+					a.active=false;
+					numActive--;
+					if (a.species==Species.wasp){
+						initActors(); // you lose and have to restart!
+					}
 				}
+			} else {
+				a.x += avatarMovement.x;
+				a.y += avatarMovement.y;
 			}
-			keepOnBoard(a);
+
+			
+
 		}
+		
+		avatarMovement.x=0;
+		avatarMovement.y=0;
+		
 		if (numActive==0)
 			gameOver=true;
 	}

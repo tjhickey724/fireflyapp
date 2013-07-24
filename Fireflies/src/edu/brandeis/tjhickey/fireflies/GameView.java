@@ -1,6 +1,7 @@
 package edu.brandeis.tjhickey.fireflies;
 
 import android.content.Context;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +11,7 @@ import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.MotionEvent;
 
 
 
@@ -150,5 +152,90 @@ public class GameView extends View {
 		q.y = (float) (p.y*gm.size/viewSize);
 		return q;
 	}
+	
+	
+	
+	// The ‘active pointer’ is the one currently moving our object.
+	private int mActivePointerId = MotionEvent.INVALID_POINTER_ID;
+	private float mLastTouchX,mLastTouchY;
+	private float mPosX,mPosY;
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+	    // Let the ScaleGestureDetector inspect all events.
+	   // mScaleDetector.onTouchEvent(ev);
+	             
+	    final int action = ev.getActionMasked(); 
+	        
+	    switch (action) { 
+	    case MotionEvent.ACTION_DOWN: {
+	        final int pointerIndex = ev.getActionIndex(); 
+	        final float x = ev.getX(pointerIndex); 
+	        final float y = ev.getY(pointerIndex); 
+	            
+	        // Remember where we started (for dragging)
+	        mLastTouchX = x;
+	        mLastTouchY = y;
+	        // Save the ID of this pointer (for dragging)
+	        mActivePointerId = ev.getPointerId(0);
+	        break;
+	    }
+	            
+	    case MotionEvent.ACTION_MOVE: {
+	        // Find the index of the active pointer and fetch its position
+	        final int pointerIndex = 
+	                ev.findPointerIndex(mActivePointerId);  
+	            
+	        final float x = ev.getX(pointerIndex);
+	        final float y = ev.getY(pointerIndex);
+	            
+	        // Calculate the distance moved
+	        final float dx = x - mLastTouchX;
+	        final float dy = y - mLastTouchY;
+
+	        mPosX += dx;
+	        mPosY += dy;
+	        PointF dp = new PointF(dx,dy);
+	        dp = toModelCoords(dp);
+	        gm.moveAvatar(dp);
+
+	        invalidate();
+
+	        // Remember this touch position for the next move event
+	        mLastTouchX = x;
+	        mLastTouchY = y;
+
+	        break;
+	    }
+	            
+	    case MotionEvent.ACTION_UP: {
+	        mActivePointerId = MotionEvent.INVALID_POINTER_ID;
+	        break;
+	    }
+	            
+	    case MotionEvent.ACTION_CANCEL: {
+	        mActivePointerId = MotionEvent.INVALID_POINTER_ID;
+	        break;
+	    }
+	        
+	    case MotionEvent.ACTION_POINTER_UP: {
+	            
+	        final int pointerIndex = ev.getActionIndex(); 
+	        final int pointerId = ev.getPointerId(pointerIndex); 
+
+	        if (pointerId == mActivePointerId) {
+	            // This was our active pointer going up. Choose a new
+	            // active pointer and adjust accordingly.
+	            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+	            mLastTouchX = ev.getX(newPointerIndex); 
+	            mLastTouchY = ev.getY(newPointerIndex); 
+	            mActivePointerId = ev.getPointerId(newPointerIndex);
+	        }
+	        break;
+	    }
+	    }       
+	    return true;
+	}
+	
 
 }
