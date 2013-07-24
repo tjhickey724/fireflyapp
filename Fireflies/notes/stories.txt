@@ -1,0 +1,14 @@
+Plan 1.
+Get System to simply draw the random fireflies on the screen.
+
+
+Plan 2. 
+Get the fireflies and wasps to move
+
+
+Plan 3.
+Get the mouse movement to be tracked and
+implement logic of game
+
+Plan 4.
+Add score keeping, sound effects, win/lose, levels...
