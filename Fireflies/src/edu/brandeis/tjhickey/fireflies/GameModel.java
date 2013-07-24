@@ -26,6 +26,7 @@ public class GameModel {
 	boolean paused = true;
 	
 	int numActors;
+	int numWasps;
 	int numActive;
 
 	private Random rand = new Random();
@@ -53,22 +54,25 @@ public class GameModel {
 	 * REFACTOR!
 	 */
 	public void initActors(){
-		numActive=0;
+		numActive=numActors-numWasps;
 		this.actors = new ArrayList<GameActor>();
 		for(int i=0; i<numActors;i++){
-			float x = rand.nextFloat()*width;
-			float y = rand.nextFloat()*height;
-			GameActor a = new GameActor(x,y);
-			this.actors.add(a);
-			a.speed = 1;
-			a.radius = 1;
-			if (numActive> numActors-3){
-				a.species = Species.wasp;
-			}else{
-				a.species = Species.firefly;
-				numActive++;
-			}
+			initActor(i);
 		}	
+	}
+	
+	private void initActor(int i) {
+		float x = rand.nextFloat()*width;
+		float y = rand.nextFloat()*height;
+		GameActor a = new GameActor(x,y);
+		this.actors.add(a);
+		a.speed = 1;
+		a.radius = 1;
+		if (i> numActors-numWasps){
+			a.species = Species.wasp;
+		}else{
+			a.species = Species.firefly;
+		}
 	}
 	
 	
@@ -95,7 +99,6 @@ public class GameModel {
 	public void update(){
 		if (paused || gameOver) return;
 		
-		
 		avatar.x += avatarMovement.x;
 		avatar.y += avatarMovement.y;
 		
@@ -104,19 +107,11 @@ public class GameModel {
 			if (a.active) {
 				a.update();
 				keepOnBoard(a);
-				if (intersects(a,avatar)) {
-					a.active=false;
-					numActive--;
-					if (a.species==Species.wasp){
-						initActors(); // you lose and have to restart!
-					}
-				}
+				handleIntersection(a);
 			} else {
 				a.x += avatarMovement.x;
 				a.y += avatarMovement.y;
 			}
-
-			
 
 		}
 		
@@ -125,6 +120,16 @@ public class GameModel {
 		
 		if (numActive==0)
 			gameOver=true;
+	}
+	
+	private void handleIntersection(GameActor a) {
+		if (intersects(a,avatar)) {
+			a.active=false;
+			numActive--;
+			if (a.species==Species.wasp){
+				initActors(); // you lose and have to restart!
+			}
+		}
 	}
 	
 	/**

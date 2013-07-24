@@ -64,7 +64,6 @@ public class GameView extends View {
 		aPaint.setAntiAlias(true);
 		aPaint.setStyle(Style.STROKE);
 		aPaint.setColor(Color.WHITE);
-		
 	}
 	
 	@Override
@@ -155,7 +154,7 @@ public class GameView extends View {
 	
 	
 	
-	// The Ôactive pointerÕ is the one currently moving our object.
+	// The ï¿½active pointerï¿½ is the one currently moving our object.
 	private int mActivePointerId = MotionEvent.INVALID_POINTER_ID;
 	private float mLastTouchX,mLastTouchY;
 	private float mPosX,mPosY;
