@@ -13,14 +13,18 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		startGame();
+	}
+	
+    private void startGame(){
 		GameView gameView = (GameView) this.findViewById(R.id.game_view);
-		gm = new GameModel(100,100);
+		gm = new GameModel(100,200);
 		gameView.setGameModel(gm);
 		gl = new GameLoop(gm,this);
 		Thread t = new Thread(gl);
 		gm.paused = false;
 		t.start();
-	}
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -31,12 +35,9 @@ public class MainActivity extends Activity {
 	
 	@Override
 	public void onStop(){
+		super.onStop();
 		gm.gameOver = true;
 	}
-	public void repaint(){
-		GameView gameView = (GameView) this.findViewById(R.id.game_view);
-		gameView.postInvalidate();
-		Log.d("main","postInvalidate");
-	}
+	
 
 }

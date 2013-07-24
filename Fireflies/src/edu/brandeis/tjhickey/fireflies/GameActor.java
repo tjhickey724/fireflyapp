@@ -8,30 +8,33 @@ package edu.brandeis.tjhickey.fireflies;
  */
 public class GameActor {
 	// size
-	double radius = 10;
+	float radius = 1;
 	// position
-	double x;
-	double y;
+	float x;
+	float y;
 	// velocity
-	double vx;
-	double vy;
+	float vx;
+	float vy;
 	// still on board?
 	boolean active;
 	// speed
-	double speed=1;
+	float speed=1;
+	// turning speed
+	float turnspeed = 0.1f;
 	// species
-
 	Species species = Species.firefly; 
 	
 	private java.util.Random rand = new java.util.Random();
 
-	public GameActor(double x, double y, boolean active) {
+	public GameActor(float x, float y, boolean active) {
 		this.x=x; this.y=y; this.active=active;
-		this.vx = speed*(rand.nextDouble()-0.5);
-		this.vy = speed*(rand.nextDouble()-0.5);
+		this.vx = speed*(rand.nextFloat()-0.5f);
+		this.vy = speed*(rand.nextFloat()-0.5f);
 	}
 	
-	public GameActor(double x, double y){
+
+	
+	public GameActor(float x, float y){
 		this(x,y,true);
 	}
 	
@@ -46,10 +49,10 @@ public class GameActor {
 	 * Note that velocity is in units per update.
 	 */
 	public void update(){
-		double turnspeed = 0.1;
-		vx += rand.nextDouble()*turnspeed -turnspeed/2;
-		vy += rand.nextDouble()*turnspeed -turnspeed/2;
-		double tmpSpeed = Math.sqrt(vx*vx+vy*vy);
+
+		vx += rand.nextFloat()*turnspeed -turnspeed/2;
+		vy += rand.nextFloat()*turnspeed -turnspeed/2;
+		float tmpSpeed = (float) Math.sqrt(vx*vx+vy*vy);
 		x += vx*speed/tmpSpeed;
 		y += vy*speed/tmpSpeed;
 	}
@@ -59,12 +62,6 @@ public class GameActor {
 		int iy = (int)y;
 		return "["+ix+","+iy+","+active+"]";
 	}
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
-	}
 
 }

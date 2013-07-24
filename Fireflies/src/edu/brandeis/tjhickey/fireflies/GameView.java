@@ -30,6 +30,7 @@ public class GameView extends View {
 	private Paint mPaint;
 	private Paint fPaint;  // fireflies
 	private Paint wPaint;  // wasps
+	private Paint aPaint;  // avatars
 	private Paint tempPaint;
 	private PointF tempPoint = new PointF(0f,0f);
 	
@@ -57,29 +58,41 @@ public class GameView extends View {
 		wPaint.setColor(Color.RED);
 		wPaint.setTextSize(50f);
 		
+		aPaint = new Paint();
+		aPaint.setAntiAlias(true);
+		aPaint.setStyle(Style.STROKE);
+		aPaint.setColor(Color.WHITE);
+		
 	}
 	
 	@Override
 	public void onDraw(Canvas canvas) {
 		clearBackground(canvas);
 		drawActors(canvas);
+		drawActor(canvas,gm.avatar);
 		Log.d("main","drawing the view");
 		canvas.drawText(""+System.nanoTime(),50,50,wPaint);
 	}
 	
 	private void drawActors(Canvas canvas){
 		for (GameActor a:gm.actors){
-			this.tempPoint.x = (float)a.x;
-			this.tempPoint.y = (float)a.y;
-			Point r = this.toViewCoords(tempPoint);
-			if (a.species == Species.firefly){
-				this.tempPaint = fPaint;
-			}else {
-				this.tempPaint = wPaint;
-			}
-			
-			canvas.drawCircle(r.x,r.y,10,this.tempPaint);
+			drawActor(canvas,a);
 		}
+	}
+	
+	private void drawActor(Canvas canvas, GameActor a){
+		this.tempPoint.x = (float)a.x;
+		this.tempPoint.y = (float)a.y;
+		Point r = this.toViewCoords(tempPoint);
+		if (a.species == Species.firefly){
+			this.tempPaint = fPaint;
+		}else if (a.species == Species.wasp){
+			this.tempPaint = wPaint;
+		} else {
+			this.tempPaint = aPaint;
+		}
+				
+		canvas.drawCircle(r.x,r.y,this.toViewCoords(a.radius),this.tempPaint);	
 	}
 	
 	private void clearBackground(Canvas canvas){
@@ -88,16 +101,7 @@ public class GameView extends View {
 		int h = getHeight();
 		canvas.drawRect(0, 0,w,h,mPaint);
 	}
-	/*
-	) {
-		super();
-		this.gm = gm;
-		MouseInputListener ml =
-				new CanvasMouseInputListener();
-		this.addMouseListener(ml);
-		this.addMouseMotionListener(ml);
-	}
-	*/
+	
 	
 	/**
 	 * toViewCoords(x) converts from model coordinates to pixels
@@ -107,11 +111,11 @@ public class GameView extends View {
 	 * @param x the unit in model coordinates 
 	 * @return the corresponding value in pixel based on window-size
 	 */
-	public int toViewCoords(double x){
-		int width = this.getWidth();
-		int height = this.getHeight();
-		int viewSize = (width<height)?width:height;
-		return (int) Math.round(x/gm.size*viewSize);
+	public float toViewCoords(float x){
+		float width = this.getWidth();
+		float height = this.getHeight();
+		float viewSize = (width<height)?width:height;
+		return x/gm.size*viewSize;
 	}
 	
 	public Point toViewCoords(PointF p){
@@ -130,14 +134,14 @@ public class GameView extends View {
 	 * @param x position in pixels in view
 	 * @return position in model coordinates
 	 */
-	public double toModelCoords(int x){
+	public float toModelCoords(float x){
 		int width = this.getWidth();
 		int height = this.getHeight();
 		int viewSize = (width<height)?width:height;
 		return x*gm.size/viewSize;
 	}
 	
-	public PointF toModelCoords(Point p){
+	public PointF toModelCoords(PointF p){
 		PointF q = new PointF(0f,0f);
 		int width = this.getWidth();
 		int height = this.getHeight();
@@ -146,85 +150,5 @@ public class GameView extends View {
 		q.y = (float) (p.y*gm.size/viewSize);
 		return q;
 	}
-
-	/**
-	 * paintComponent(g) draws the current state of the model
-	 * onto the component. It first repaints it in blue, 
-	 * then draws the avatar,
-	 * then draws each of the other actors, i.e. fireflies and wasps...
-	 */
-	/*
-	public void paintComponent(Graphics g){
-		super.paintComponent(g);
-		if (gm==null) return;
-		int width = this.getWidth();
-		int height = this.getHeight();
-		g.setColor(Color.BLUE);
-		g.fillRect(0,0,width,height);
-		drawActor(g,gm.avatar,Color.GREEN);
-		for(GameActor a:gm.actors){
-			drawActor(g,a,Color.RED);
-		}
-		g.setFont(new Font("Helvetica",Font.BOLD,64));
-		if (gm.gameOver){
-			g.drawString("You Won!!!", width/10, height/2);
-		}
-
-	}
-	*/
-	
-	/**
-	 * drawActor(g,a,c) - draws a single actor a 
-	 * using the Graphics object g. The color c is the
-	 * default color used for new species, but is ignored
-	 * for avatars, wasps, and fireflies
-	 * 
-	 * @param g - the Graphics object used for drawing
-	 * @param a - the Actor to be drawn
-	 * @param c - the default color for actors of unknown species
-	 */
-	/*
-	private void drawActor(Graphics g, GameActor a,Color c){
-		if (!a.active) return;
-		int theRadius = toViewCoords(a.radius);
-		int x = toViewCoords(a.x);
-		int y = toViewCoords(a.y);
-		
-		switch (a.species){
-		case firefly: c=Color.GREEN; break;
-		case wasp: c=Color.RED; break;
-		case avatar: c=Color.BLACK; break;
-		}
-		g.setColor(c);
-		if (a.species==Species.avatar){
-			g.drawOval(x-theRadius, y-theRadius, 2*theRadius, 2*theRadius);
-		} else
-			g.fillOval(x-theRadius, y-theRadius, 2*theRadius, 2*theRadius);
-
-	}
-	*/
-	
-	/**
-	 * this listens for mouse clicks (which unpauses the game)
-	 * and mouse movements which move the avatar
-	 * @author tim
-	 *
-	 */
-	/*
-	private class CanvasMouseInputListener extends MouseInputAdapter{
-		public void mouseClicked(MouseEvent e){
-			gm.paused= !(gm.paused); //false;
-		}
-		public void mouseMoved(MouseEvent e){
-			Point p = e.getPoint();
-			double x = toModelCoords(p.x); 
-			double y = toModelCoords(p.y);
-			gm.avatar.x =x;
-			gm.avatar.y =y;
-			//System.out.println("x="+p.x+" y="+p.y);
-			e.getComponent().repaint();		
-		}
-	}
-	*/
 
 }

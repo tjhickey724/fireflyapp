@@ -15,7 +15,7 @@ public class GameLoop implements Runnable{
 	}
 
 	public void run(){
-		final View game_view = 
+		final View gameView = 
 				mainActivity.findViewById(R.id.game_view);
 
 		while(true){
@@ -25,13 +25,19 @@ public class GameLoop implements Runnable{
 			gm.update();
 			Log.d("loop", "in GameLoop");
 			
-			// repaint the gameboard, safely
+			// repaint the gameView, safely
+			gameView.postInvalidate();
+			
+			/*
+			// which is roughly equivalent to the following
 			mainActivity.runOnUiThread(
 				new Runnable(){
 				public void run(){
-					game_view.postInvalidate();
+					game_view.invalidate();
 				}
 			});
+			*/
+		
 
 			// sleep for 0.05 seconds
 			try{

@@ -13,46 +13,54 @@ import java.util.Random;
  *
  */
 public class GameModel {
-	public double width;
-	public double height;
-	public double size;
-	public List<GameActor> actors;
+	float width;
+	float height;
+	float size;
+	
+	List<GameActor> actors;
+	GameActor avatar;
+
+	boolean gameOver = false;
+	boolean paused = true;
+	
+	int numActors;
+	int numActive;
+
 	private Random rand = new Random();
-	public GameActor avatar;
-	private int numActors;
-	public boolean gameOver = false;
-	public boolean paused = true;
-	public int numActive;
 
 
-	public GameModel(double size, int numActors) {
+	public GameModel(float size, int numActors) {
 		this.width =size;
 		this.height = size;
 		this.size=size;
+		
 		this.numActors = numActors;
 		initActors();
-		this.avatar = new GameActor(0,0);
+		
+		this.avatar = new GameActor(size/2,size/2);
 		avatar.species = Species.avatar;
 		this.avatar.radius=6;
+		
 		this.gameOver = false;
 	}
 	/**
 	 * initActors creates a new ArrayList of actors
-	 * which consists of 90 fireflies and 10 wasps
+	 * which consists of 90% fireflies and 10% wasps
+	 * REFACTOR!
 	 */
 	public void initActors(){
 		numActive=0;
 		this.actors = new ArrayList<GameActor>();
 		for(int i=0; i<numActors;i++){
-			double x = rand.nextDouble()*width;
-			double y = rand.nextDouble()*height;
+			float x = rand.nextFloat()*width;
+			float y = rand.nextFloat()*height;
 			GameActor a = new GameActor(x,y);
 			this.actors.add(a);
 			a.speed = 1;
 			a.radius = 1;
-			if (numActive>this.numActors*0.9)
+			if (numActive>this.numActors*0.9){
 				a.species = Species.wasp;
-			else{
+			}else{
 				a.species = Species.firefly;
 				numActive++;
 			}
@@ -66,6 +74,33 @@ public class GameModel {
 	
 	public void stop(){
 		paused = true;
+	}
+	
+
+	
+	/**
+	 * update moves all actors one step and if
+	 * any fireflies that intersect with the avatar
+	 * are remove, while if a wasp intersects the avatar,
+	 * the game ends
+	 * REFACTOR
+	 */
+	public void update(){
+		if (paused || gameOver) return;
+		
+		for(GameActor a:this.actors){
+			a.update();
+			if (a.active && intersects(a,avatar)) {
+				a.active=false;
+				numActive--;
+				if (a.species==Species.wasp){
+					initActors(); // you lose and have to restart!
+				}
+			}
+			keepOnBoard(a);
+		}
+		if (numActive==0)
+			gameOver=true;
 	}
 	
 	/**
@@ -90,45 +125,17 @@ public class GameModel {
 	}
 	
 	/**
-	 * update moves all actors one step and if
-	 * any fireflies that intersect with the avatar
-	 * are remove, while if a wasp intersects the avatar,
-	 * the game is restarted
+	 * this returns true if the two actors intersect
+	 * @param a
+	 * @param b
+	 * @return
 	 */
-	public void update(){
-		if (paused || gameOver) return;
-		for(GameActor a:this.actors){
-			a.update();
-			if (a.active && intersects(a,avatar)) {
-				a.active=false;
-				numActive--;
-				if (a.species==Species.wasp){
-					initActors(); // you lose and have to restart!
-				}
-			}
-			keepOnBoard(a);
-		}
-		if (numActive==0)
-			gameOver=true;
-	}
-	
 	public boolean intersects(GameActor a, GameActor b){
-		double dx=a.x-b.x;
-		double dy = a.y-b.y;
-		double d = Math.sqrt(dx*dx+dy*dy);
+		float dx=a.x-b.x;
+		float dy = a.y-b.y;
+		float d = (float) Math.sqrt(dx*dx+dy*dy);
 		return (d < a.radius + b.radius);
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		GameModel gm = new GameModel(100,3);
-		for(int i=0;i<10;i++){
-			System.out.println("i="+i+": "+gm.actors);
-			gm.update();
-		}
-
-	}
 
 }
