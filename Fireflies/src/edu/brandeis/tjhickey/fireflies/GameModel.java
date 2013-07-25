@@ -108,7 +108,11 @@ public class GameModel {
 					a.active=false;
 					numActive--;
 					if (a.species==Species.wasp){
+						avatar.health--;
+						if(avatar.health==0){
+						avatar.health=2;
 						initActors(); // you lose and have to restart!
+						}
 					}
 				}
 			} else {

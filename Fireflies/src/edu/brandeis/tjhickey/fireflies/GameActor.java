@@ -21,6 +21,7 @@ public class GameActor {
 	float speed=1;
 	// turning speed
 	float turnspeed = 0.1f;
+	float health = 2;
 	// species
 	Species species = Species.firefly; 
 	
