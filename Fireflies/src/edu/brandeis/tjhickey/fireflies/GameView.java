@@ -33,6 +33,7 @@ public class GameView extends View {
 	private Paint fPaint;  // fireflies
 	private Paint wPaint;  // wasps
 	private Paint aPaint;  // avatars
+	private Paint xPaint; //bees
 	private Paint tempPaint;
 	private PointF tempPoint = new PointF(0f,0f);
 	
@@ -65,6 +66,11 @@ public class GameView extends View {
 		aPaint.setStyle(Style.STROKE);
 		aPaint.setColor(Color.WHITE);
 		
+		xPaint = new Paint();
+		xPaint.setAntiAlias(true);
+		xPaint.setStyle(Style.FILL);
+		xPaint.setColor(Color.YELLOW);
+		
 	}
 	
 	@Override
@@ -90,7 +96,11 @@ public class GameView extends View {
 			this.tempPaint = fPaint;
 		}else if (a.species == Species.wasp){
 			this.tempPaint = wPaint;
-		} else {
+		}
+		else if(a.species == Species.bees) {
+			this.tempPaint = xPaint;
+		}
+		else {
 			this.tempPaint = aPaint;
 		}
 				
@@ -155,10 +165,10 @@ public class GameView extends View {
 	
 	
 	
-	// The ‘active pointer’ is the one currently moving our object.
+	// The active pointer is the one currently moving our object.
 	private int mActivePointerId = MotionEvent.INVALID_POINTER_ID;
 	private float mLastTouchX,mLastTouchY;
-	private float mPosX,mPosY;
+	private float mPosX, mPosY;
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {

@@ -62,8 +62,11 @@ public class GameModel {
 			this.actors.add(a);
 			a.speed = 1;
 			a.radius = 1;
-			if (numActive> numActors-3){
+			if (numActive> numActors-6){
 				a.species = Species.wasp;
+			}
+			else if (numActive > numActors - 10) {
+				a.species = Species.bees;
 			}else{
 				a.species = Species.firefly;
 				numActive++;
@@ -109,6 +112,15 @@ public class GameModel {
 					numActive--;
 					if (a.species==Species.wasp){
 						initActors(); // you lose and have to restart!
+					}
+					if (a.species == Species.bees) {
+						float x = rand.nextFloat()*width;
+						float y = rand.nextFloat()*height;
+						GameActor b = new GameActor(x,y);
+						this.actors.add(b);
+						b.speed = 1;
+						b.radius = 1;
+						b.species = Species.bees;
 					}
 				}
 			} else {
