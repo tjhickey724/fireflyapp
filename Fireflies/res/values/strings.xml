@@ -5,6 +5,6 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_speed">SpeedActivity</string>
-    <string name="seekbarvalue">0</string>
+    <string name="seekbarvalue">50</string>
 
 </resources>
