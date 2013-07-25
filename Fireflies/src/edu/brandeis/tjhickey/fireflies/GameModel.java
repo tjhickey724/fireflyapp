@@ -95,7 +95,7 @@ public class GameModel {
 	 * the game ends
 	 * REFACTOR
 	 */
-	public void update(){
+	public synchronized void update(){
 		if (paused || gameOver) return;
 		
 		
