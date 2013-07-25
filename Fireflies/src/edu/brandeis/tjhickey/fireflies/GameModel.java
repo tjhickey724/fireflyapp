@@ -118,7 +118,7 @@ public class GameModel {
 		avatarMovement.x=0;
 		avatarMovement.y=0;
 		
-		if (numActive==0)
+		if (numActive==0 || numWasps ==5)
 			gameOver=true;
 	}
 	
