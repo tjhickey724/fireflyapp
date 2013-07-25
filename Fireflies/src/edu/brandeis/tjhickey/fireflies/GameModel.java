@@ -113,14 +113,14 @@ public class GameModel {
 					if (a.species==Species.wasp){
 						initActors(); // you lose and have to restart!
 					}
-					if (a.species == Species.bees) {
+					else if (a.species == Species.bees) {
 						float x = rand.nextFloat()*width;
 						float y = rand.nextFloat()*height;
 						GameActor b = new GameActor(x,y);
 						this.actors.add(b);
 						b.speed = 1;
 						b.radius = 1;
-						b.species = Species.bees;
+						b.species = Species.firefly;
 					}
 				}
 			} else {
