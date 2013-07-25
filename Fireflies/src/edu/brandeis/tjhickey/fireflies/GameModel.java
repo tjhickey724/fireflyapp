@@ -27,6 +27,7 @@ public class GameModel {
 	
 	int numActors;
 	int numActive;
+	int initActive;
 
 	private Random rand = new Random();
 	
@@ -68,6 +69,7 @@ public class GameModel {
 				a.species = Species.firefly;
 				numActive++;
 			}
+			initActive=numActive;
 		}	
 	}
 	
@@ -108,7 +110,7 @@ public class GameModel {
 					a.active=false;
 					numActive--;
 					if (a.species==Species.wasp){
-						initActors(); // you lose and have to restart!
+						repell();
 					}
 				}
 			} else {
@@ -125,6 +127,20 @@ public class GameModel {
 		
 		if (numActive==0)
 			gameOver=true;
+	}
+	
+	public void repell()
+	{
+		for(GameActor a:this.actors){
+			if(!a.active){
+				a.active=true;
+				float dx=a.x-avatar.x;
+				float dy=a.y-avatar.y;
+				a.vx=dx*3;
+				a.vy=dy*3;
+			}
+			numActive=initActive;
+		}
 	}
 	
 	/**
