@@ -21,6 +21,7 @@ public class GameModel {
 	
 	List<GameActor> actors;
 	GameActor avatar;
+	GameActor hole;
 
 	boolean gameOver = false;
 	boolean paused = true;
@@ -43,7 +44,11 @@ public class GameModel {
 		
 		this.avatar = new GameActor(size/2,size/2);
 		avatar.species = Species.avatar;
-		this.avatar.radius=6;
+		this.avatar.radius=4;
+		
+		this.hole = new GameActor(size/2,size/2);
+		hole.species = Species.hole;
+		this.hole.radius = 6;
 		
 		this.gameOver = false;
 	}
@@ -62,7 +67,7 @@ public class GameModel {
 			this.actors.add(a);
 			a.speed = 1;
 			a.radius = 1;
-			if (numActive> numActors-3){
+			if (numActive> numActors-7){
 				a.species = Species.wasp;
 			}else{
 				a.species = Species.firefly;
@@ -104,21 +109,28 @@ public class GameModel {
 			if (a.active) {
 				a.update();
 				keepOnBoard(a);
-				if (intersects(a,avatar)) {
+				if (intersects(a,hole)) {
 					a.active=false;
 					numActive--;
 					if (a.species==Species.wasp){
 						initActors(); // you lose and have to restart!
 					}
 				}
+				
+				if (intersects(a,avatar)){
+					a.vx = -a.vx;
+					a.vy = -a.vy;
+				}
+				
 			} else {
-				a.x += avatarMovement.x;
-				a.y += avatarMovement.y;
+				//a.x += avatarMovement.x;
+				//a.y += avatarMovement.y;
 			}
 
 			
 
 		}
+		
 		
 		avatarMovement.x=0;
 		avatarMovement.y=0;
