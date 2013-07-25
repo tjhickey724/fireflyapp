@@ -22,7 +22,7 @@ public class GameActor {
 	// turning speed
 	float turnspeed = 0.1f;
 	// species
-	Species species = Species.firefly; 
+	Species species = Species.FIREFLY; 
 	
 	private java.util.Random rand = new java.util.Random();
 

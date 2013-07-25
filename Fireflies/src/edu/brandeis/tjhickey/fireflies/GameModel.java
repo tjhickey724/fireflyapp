@@ -13,12 +13,12 @@ import android.graphics.PointF;
  * represents the state of the game
  * @author tim
  *
- */
+ */	
 public class GameModel {
 	float width;
 	float height;
 	float size;
-	
+	int caught = 0;
 	List<GameActor> actors;
 	GameActor avatar;
 
@@ -31,6 +31,9 @@ public class GameModel {
 	private Random rand = new Random();
 	
 	private PointF avatarMovement = new PointF(0f,0f);
+	public String caught1;
+	public String left;
+	public int lefty;
 
 
 	public GameModel(float size, int numActors) {
@@ -42,7 +45,7 @@ public class GameModel {
 		initActors();
 		
 		this.avatar = new GameActor(size/2,size/2);
-		avatar.species = Species.avatar;
+		avatar.species = Species.AVATAR;
 		this.avatar.radius=6;
 		
 		this.gameOver = false;
@@ -56,19 +59,25 @@ public class GameModel {
 		numActive=0;
 		this.actors = new ArrayList<GameActor>();
 		for(int i=0; i<numActors;i++){
-			float x = rand.nextFloat()*width;
-			float y = rand.nextFloat()*height;
-			GameActor a = new GameActor(x,y);
-			this.actors.add(a);
-			a.speed = 1;
-			a.radius = 1;
-			if (numActive> numActors-3){
-				a.species = Species.wasp;
-			}else{
-				a.species = Species.firefly;
-				numActive++;
-			}
+			initActor(i);
 		}	
+	}
+	
+	private void initActor(int i) {
+		float x = rand.nextFloat()*width;
+		float y = rand.nextFloat()*height;
+		GameActor a = new GameActor(x,y);
+		this.actors.add(a);
+		a.speed = 1;
+		a.radius = 1;
+		if (i> numActors-3){
+			a.species = Species.WASP;
+		}else{
+			a.species = Species.FIREFLY;
+			numActive++;
+			lefty++;
+			left = Integer.toString(lefty);
+		}
 	}
 	
 	
@@ -104,16 +113,11 @@ public class GameModel {
 			if (a.active) {
 				a.update();
 				keepOnBoard(a);
-				if (intersects(a,avatar)) {
-					a.active=false;
-					numActive--;
-					if (a.species==Species.wasp){
-						initActors(); // you lose and have to restart!
-					}
-				}
+				handleIntersection(a);
 			} else {
 				a.x += avatarMovement.x;
 				a.y += avatarMovement.y;
+				
 			}
 
 			
@@ -125,6 +129,19 @@ public class GameModel {
 		
 		if (numActive==0)
 			gameOver=true;
+	}
+	private void handleIntersection(GameActor a) {
+		if (intersects(a,avatar)) {
+			a.active=false;
+			numActive--;
+			caught++;
+			caught1 = Integer.toString(caught);
+			if (a.species==Species.WASP){
+				initActors(); // you lose and have to restart!
+				caught = 0;
+				lefty = 0; 
+			}
+		}
 	}
 	
 	/**

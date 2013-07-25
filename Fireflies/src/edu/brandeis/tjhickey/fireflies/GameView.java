@@ -74,21 +74,23 @@ public class GameView extends View {
 		drawActor(canvas,gm.avatar);
 		Log.d("main","drawing the view");
 		canvas.drawText(""+System.nanoTime(),50,50,wPaint);
+		canvas.drawText(gm.caught1 +"/"+ gm.left, 100, 100, wPaint);
 	}
 	
 	private void drawActors(Canvas canvas){
 		for (GameActor a:gm.actors){
 			drawActor(canvas,a);
 		}
+		canvas.drawText(gm.caught1, 0f, 0f, aPaint);
 	}
 	
 	private void drawActor(Canvas canvas, GameActor a){
 		this.tempPoint.x = (float)a.x;
 		this.tempPoint.y = (float)a.y;
 		Point r = this.toViewCoords(tempPoint);
-		if (a.species == Species.firefly){
+		if (a.species == Species.FIREFLY){
 			this.tempPaint = fPaint;
-		}else if (a.species == Species.wasp){
+		}else if (a.species == Species.WASP){
 			this.tempPaint = wPaint;
 		} else {
 			this.tempPaint = aPaint;
