@@ -67,7 +67,7 @@ public class GameModel {
 			this.actors.add(a);
 			a.speed = 1;
 			a.radius = 1;
-			if (numActive> numActors-7){
+			if (numActive> numActors-3){
 				a.species = Species.wasp;
 			}else{
 				a.species = Species.firefly;
