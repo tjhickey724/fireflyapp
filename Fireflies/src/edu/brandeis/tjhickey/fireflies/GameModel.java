@@ -27,23 +27,32 @@ public class GameModel {
 	
 	int numActors;
 	int numActive;
-
+	int collected;
+	
+	long startTime;
+	long time;
+	long high;
+	
 	private Random rand = new Random();
 	
 	private PointF avatarMovement = new PointF(0f,0f);
 
 
-	public GameModel(float size, int numActors) {
+	public GameModel(float size, int numActors, long high) {
 		this.width =size;
 		this.height = size;
 		this.size=size;
+		this.high=high;
 		
+		this.collected = 0;
 		this.numActors = numActors;
 		initActors();
 		
 		this.avatar = new GameActor(size/2,size/2);
 		avatar.species = Species.avatar;
 		this.avatar.radius=6;
+		
+		this.startTime = System.nanoTime();
 		
 		this.gameOver = false;
 	}
@@ -53,6 +62,7 @@ public class GameModel {
 	 * REFACTOR!
 	 */
 	public void initActors(){
+		time = 0;
 		numActive=0;
 		this.actors = new ArrayList<GameActor>();
 		for(int i=0; i<numActors;i++){
@@ -68,7 +78,7 @@ public class GameModel {
 				a.species = Species.firefly;
 				numActive++;
 			}
-		}	
+		}
 	}
 	
 	
@@ -95,10 +105,10 @@ public class GameModel {
 	public void update(){
 		if (paused || gameOver) return;
 		
+		time = (System.nanoTime() - startTime)/1000000000;
 		
 		avatar.x += avatarMovement.x;
 		avatar.y += avatarMovement.y;
-		
 		
 		for(GameActor a:this.actors){
 			if (a.active) {
@@ -116,7 +126,7 @@ public class GameModel {
 				a.y += avatarMovement.y;
 			}
 
-			
+			collected = numActors-numActive;
 
 		}
 		

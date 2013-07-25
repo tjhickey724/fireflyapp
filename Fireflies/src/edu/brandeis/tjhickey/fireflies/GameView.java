@@ -73,7 +73,10 @@ public class GameView extends View {
 		drawActors(canvas);
 		drawActor(canvas,gm.avatar);
 		Log.d("main","drawing the view");
-		canvas.drawText(""+System.nanoTime(),50,50,wPaint);
+		canvas.drawText("Elapsed Time: "+gm.time,50,50,wPaint);
+		canvas.drawText("Collected "+gm.collected + " of " +
+				(gm.collected + gm.numActive),50,100,wPaint);
+		canvas.drawText("Best Score: "+gm.high,50,150,wPaint);
 	}
 	
 	private void drawActors(Canvas canvas){
