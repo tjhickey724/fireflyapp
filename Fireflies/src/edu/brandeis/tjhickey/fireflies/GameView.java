@@ -13,7 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.MotionEvent;
 
-
+//I want more wasps to appear when a wasp is hit
+//I want all of the fireflies to be released when a wasp is hit
 
 /**
  * a GameView is a 2D view of a GameModel

@@ -127,6 +127,8 @@ public class GameModel {
 			a.active=false;
 			numActive--;
 			if (a.species==Species.wasp){
+				//I want the number of wasps to multiply when a wasp is hit
+				numWasps++;
 				initActors(); // you lose and have to restart!
 			}
 		}
