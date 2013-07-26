@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Paint.Style;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 /**
@@ -107,7 +106,6 @@ public class GameView {
 
 		drawActor(canvas, gm.avatar);
 		
-		Log.d("main", "drawing the view");
 		canvas.drawText("" + System.nanoTime(), 50, 50, wPaint);
 		
 		surfaceHolder.unlockCanvasAndPost(canvas);

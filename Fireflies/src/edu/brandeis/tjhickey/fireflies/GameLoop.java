@@ -7,11 +7,11 @@ import android.view.View;
 public class GameLoop implements Runnable{
 
 	private GameModel gm; 
-	private GameView fc;
+	private GameView gv;
 	
-	public GameLoop(GameModel gm, GameView fc) {
+	public GameLoop(GameModel gm, GameView gv) {
 	 this.gm=gm;
-	 this.fc=fc;
+	 this.gv=gv;
 
 	}
 
@@ -23,10 +23,9 @@ public class GameLoop implements Runnable{
 			
 			// update the model
 			gm.update();
-			Log.d("loop", "in GameLoop");
 			
 			// repaint the gameView, safely
-			fc.redraw();
+			gv.redraw();
 			
 			// sleep for 0.05 seconds
 			try{
