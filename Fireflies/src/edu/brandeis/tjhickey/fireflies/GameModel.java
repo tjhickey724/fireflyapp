@@ -83,10 +83,34 @@ public class GameModel {
 		return gameOver;
 	}
 
+	/**
+	 * moveAvatar(dp) is called by the GameView when the user has
+	 * moved the avater by the model vector dp. The call is from
+	 * the UI thread so it could potentially have a conflict with
+	 * the GameLoop thread and hence we synchronize it
+	 * @param dp
+	 */
 	public void moveAvatar(PointF dp) {
 		synchronized (avatarMovement) {
 			this.avatarMovement.x += dp.x;
 			this.avatarMovement.y += dp.y;
+		}
+	}
+	
+	/**
+	 * getAvatarMovement(dp) stores the accumulated avatarMovement
+	 * in the parameter dp, since we don't want the other thread to be
+	 * modifying avatarMovement while we're working with it, we add
+	 * synchronized as we copy over the values and reset them to zero.
+	 * @param dp
+	 */
+	private void getAvatarMovement(PointF dp) {
+		synchronized (avatarMovement) {
+			dp.x = avatarMovement.x;
+			dp.y = avatarMovement.y;
+			// reset the avatarMovement
+			avatarMovement.x = 0;
+			avatarMovement.y = 0;
 		}
 	}
 
@@ -103,19 +127,15 @@ public class GameModel {
 		// move the avatar to follow the mouse
 		PointF dp = new PointF(0f, 0f);
 		getAvatarMovement(dp);
-		synchronized (avatar) {
-			avatar.x += dp.x;
-			avatar.y += dp.y;
-		}
+		avatar.x += dp.x;
+		avatar.y += dp.y;
 
 		// move all the other actors
 		for (GameActor a : this.actors) {
-			synchronized (a) {
-				if (a.active) {
-					updateFreeActor(a);
-				} else {
-					updateCaughtActor(dp, a);
-				}
+			if (a.active) {
+				updateFreeActor(a);
+			} else {
+				updateCaughtActor(dp, a);
 			}
 		}
 
@@ -124,15 +144,7 @@ public class GameModel {
 			gameOver = true;
 	}
 
-	private void getAvatarMovement(PointF dp) {
-		synchronized (avatarMovement) {
-			dp.x = avatarMovement.x;
-			dp.y = avatarMovement.y;
-			// reset the avatarMovement
-			avatarMovement.x = 0;
-			avatarMovement.y = 0;
-		}
-	}
+
 
 	private void updateCaughtActor(PointF dp, GameActor a) {
 		// move the caught fireflies along with the net

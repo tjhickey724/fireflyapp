@@ -7,16 +7,16 @@ import android.view.View;
 public class GameLoop implements Runnable{
 
 	private GameModel gm; 
-	private MainActivity mainActivity;
+	private FireflyCanvas fc;
 	
-	public GameLoop(GameModel gm, MainActivity m) {
+	public GameLoop(GameModel gm, FireflyCanvas fc) {
 	 this.gm=gm;
-	 this.mainActivity=m;
+	 this.fc=fc;
+
 	}
 
 	public void run(){
-		final View gameView = 
-				mainActivity.findViewById(R.id.game_view);
+
 
 		while(true){
 			if (gm.isStopped()) return; // end the loop
@@ -26,7 +26,7 @@ public class GameLoop implements Runnable{
 			Log.d("loop", "in GameLoop");
 			
 			// repaint the gameView, safely
-			gameView.postInvalidate();
+			fc.redraw();
 			
 			// sleep for 0.05 seconds
 			try{
