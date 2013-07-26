@@ -7,13 +7,13 @@ import android.view.Menu;
 
 public class MainActivity extends Activity {
 
-	GameController gameView;
+	GameController gameController;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		gameView = (GameController) this.findViewById(R.id.game_view );
+		gameController = (GameController) this.findViewById(R.id.game_controller );
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
 	@Override
 	public void onStop(){
 		super.onStop();		
-		gameView.stop();
+		gameController.stop();
 	}
 	
 

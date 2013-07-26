@@ -22,21 +22,21 @@ import android.view.MotionEvent;
 public class GameController extends SurfaceView implements SurfaceHolder.Callback {
 
 
-	private GameView fc;
-	private SurfaceHolder h;
+	private GameView gameView;
+	private SurfaceHolder surfaceHolder;
 	
 	public GameController(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
-		h = this.getHolder();
-		h.addCallback(this);
+		surfaceHolder = this.getHolder();
+		surfaceHolder.addCallback(this);
 
 
 
 	}
 	
 	public void stop(){
-		fc.stop();
+		gameView.stop();
 	}
 	
 	
@@ -44,19 +44,19 @@ public class GameController extends SurfaceView implements SurfaceHolder.Callbac
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		fc.changeDimensions(width,height);
+		gameView.changeDimensions(width,height);
 		
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		fc = new GameView(h);
-		fc.start();
+		gameView = new GameView(surfaceHolder);
+		gameView.start();
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		fc.stop();
+		gameView.stop();
 		
 	}
 	// end of the SurfaceHolder.Callback interface
@@ -103,7 +103,7 @@ public class GameController extends SurfaceView implements SurfaceHolder.Callbac
 
 			PointF dp = new PointF(dx, dy);
 			
-			fc.moveAvatar(dp);
+			gameView.moveAvatar(dp);
 
 			invalidate();
 
