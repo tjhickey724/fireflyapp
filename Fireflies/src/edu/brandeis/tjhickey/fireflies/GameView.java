@@ -1,154 +1,195 @@
 package edu.brandeis.tjhickey.fireflies;
 
-import android.content.Context;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.util.AttributeSet;
+import android.graphics.Paint.Style;
 import android.util.Log;
-import android.view.SurfaceView;
 import android.view.SurfaceHolder;
-import android.view.View;
-import android.view.MotionEvent;
 
 /**
- * a GameView is a SurfaceView that hides the FireflyCanvas
- * which is where the real action is. This class responds to
- * stop() calls from the MainActivity and also to onTouch events
- * It plays a dual role as an instance of the SurfaceHolder.Callback
- * which allows us to discover when the surface is created, destroyed, or changed in size.
- * 
+ * this is an implementation of the firefly game in which you use your finger
+ * to move a net which captures fireflies. This class creates the GameModel
+ * and starts a GameLoop.  It also contains code for the redraw() method.
+ * Since we are using SurfaceView, there is much less use of synchronized methods or statements
  * @author tim
- * 
+ *
  */
-public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-
-
-	private FireflyCanvas fc;
-	private SurfaceHolder h;
+public class GameView {
 	
-	public GameView(Context context, AttributeSet attrs) {
-		super(context, attrs);
+	private GameModel gm;
+	private Paint mPaint;
+	private Paint fPaint; // fireflies
+	private Paint wPaint; // wasps
+	private Paint aPaint; // avatars
+	private Paint tempPaint;
+	private PointF tempPoint = new PointF(0f, 0f);
+	
+	private SurfaceHolder surfaceHolder;
+	boolean readyToDraw = false;
+	
+	private float width,height;
+
+
+	public GameView(SurfaceHolder sh){
+
+		this.surfaceHolder = sh;
 		
-		h = this.getHolder();
-		h.addCallback(this);
-
-
-
+		initFireflyCanvas();
+		
+		//create GameModel and start the GameLoop
+		gm = new GameModel(100,200);
+		GameLoop gl = new GameLoop(gm,this);
+		Thread t = new Thread(gl);
+		t.start();
+	}
+	
+	
+	
+	public void start(){
+		this.readyToDraw = true;
+		gm.start();
 	}
 	
 	public void stop(){
-		fc.stop();
+		this.readyToDraw = false;
+		gm.stop();
+	}
+	
+	public void setGameModel(GameModel gm) {
+		this.gm = gm;
+	}
+
+	public void moveAvatar(PointF dp){
+	  gm.moveAvatar(toModelCoords(dp));
+	}
+	
+	public void changeDimensions(float w, float h) {
+		this.width = w;
+		this.height = h;
+	}
+	private void initFireflyCanvas(){
+
+		// Set up default Paint values
+		mPaint = new Paint();
+		mPaint.setAntiAlias(true);
+		mPaint.setStyle(Style.FILL);
+		mPaint.setColor(Color.BLUE);
+
+		fPaint = new Paint();
+		fPaint.setAntiAlias(true);
+		fPaint.setStyle(Style.FILL);
+		fPaint.setColor(Color.GREEN);
+
+		wPaint = new Paint();
+		wPaint.setAntiAlias(true);
+		wPaint.setStyle(Style.FILL);
+		wPaint.setColor(Color.RED);
+		wPaint.setTextSize(50f);
+
+		aPaint = new Paint();
+		aPaint.setAntiAlias(true);
+		aPaint.setStyle(Style.STROKE);
+		aPaint.setColor(Color.WHITE);
+
 	}
 	
 	
-	// here is where we implement the SurfaceHolder.Callback interface
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
-		fc.changeDimensions(width,height);
+	public void redraw(){
+		if (!readyToDraw) return;
 		
-	}
-
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		fc = new FireflyCanvas(h);
-		fc.start();
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		fc.stop();
+		Canvas canvas=surfaceHolder.lockCanvas();
 		
+		clearBackground(canvas);
+		drawActors(canvas);
+
+		drawActor(canvas, gm.avatar);
+		
+		Log.d("main", "drawing the view");
+		canvas.drawText("" + System.nanoTime(), 50, 50, wPaint);
+		
+		surfaceHolder.unlockCanvasAndPost(canvas);
 	}
-	// end of the SurfaceHolder.Callback interface
-	
-	
-	// finally we respond to TouchEvents by calling fc.moveAvatar(...)
-	
-	
-	// The ‘active pointer’ is the one currently moving our object.
-	private int mActivePointerId = MotionEvent.INVALID_POINTER_ID;
-	private float mLastTouchX, mLastTouchY;
 
-	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
-		// Let the ScaleGestureDetector inspect all events.
-		// mScaleDetector.onTouchEvent(ev);
+	private void drawActors(Canvas canvas) {
+		try{
+		for (GameActor a : gm.actors) {
 
-		final int action = ev.getActionMasked();
-
-		switch (action) {
-		case MotionEvent.ACTION_DOWN: {
-			final int pointerIndex = ev.getActionIndex();
-			final float x = ev.getX(pointerIndex);
-			final float y = ev.getY(pointerIndex);
-
-			// Remember where we started (for dragging)
-			mLastTouchX = x;
-			mLastTouchY = y;
-			// Save the ID of this pointer (for dragging)
-			mActivePointerId = ev.getPointerId(0);
-			break;
-		}
-
-		case MotionEvent.ACTION_MOVE: {
-			// Find the index of the active pointer and fetch its position
-			final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-
-			final float x = ev.getX(pointerIndex);
-			final float y = ev.getY(pointerIndex);
-
-			// Calculate the distance moved
-			final float dx = x - mLastTouchX;
-			final float dy = y - mLastTouchY;
-
-			PointF dp = new PointF(dx, dy);
+				drawActor(canvas, a);
 			
-			fc.moveAvatar(dp);
-
-			invalidate();
-
-			// Remember this touch position for the next move event
-			mLastTouchX = x;
-			mLastTouchY = y;
-
-			break;
 		}
-
-		case MotionEvent.ACTION_UP: {
-			mActivePointerId = MotionEvent.INVALID_POINTER_ID;
-			break;
+		} catch(Exception e){
+			System.out.println("error in drawActors:"+e);
 		}
-
-		case MotionEvent.ACTION_CANCEL: {
-			mActivePointerId = MotionEvent.INVALID_POINTER_ID;
-			break;
-		}
-
-		case MotionEvent.ACTION_POINTER_UP: {
-
-			final int pointerIndex = ev.getActionIndex();
-			final int pointerId = ev.getPointerId(pointerIndex);
-
-			if (pointerId == mActivePointerId) {
-				// This was our active pointer going up. Choose a new
-				// active pointer and adjust accordingly.
-				final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-				mLastTouchX = ev.getX(newPointerIndex);
-				mLastTouchY = ev.getY(newPointerIndex);
-				mActivePointerId = ev.getPointerId(newPointerIndex);
-			}
-			break;
-		}
-		}
-		return true;
 	}
 
+	private void drawActor(Canvas canvas, GameActor a) {
+		this.tempPoint.x = (float) a.x;
+		this.tempPoint.y = (float) a.y;
+		Point r = this.toViewCoords(tempPoint);
+		
+		tempPaint = getPaint(a);
 
+		canvas.drawCircle(r.x, r.y, this.toViewCoords(a.radius), tempPaint);
+	}
+
+	private Paint getPaint(GameActor a) {
+		if (a.species == Species.firefly) {
+			return fPaint;
+		} else if (a.species == Species.wasp) {
+			return wPaint;
+		} else {
+			return aPaint;
+		}
+	}
+
+	private void clearBackground(Canvas canvas) {
+		canvas.drawRect(0, 0, width, height, mPaint);
+	}
+
+	/**
+	 * toViewCoords(x) converts from model coordinates to pixels on the screen
+	 * so that objects can be drawn to scale, i.e. as the screen is resized the
+	 * objects change size proportionately.
+	 * 
+	 * @param x
+	 *            the unit in model coordinates
+	 * @return the corresponding value in pixel based on window-size
+	 */
+	public float toViewCoords(float x) {
+		float viewSize = (width < height) ? width : height;
+		return x / gm.size * viewSize;
+	}
+
+	public Point toViewCoords(PointF p) {
+		Point q = new Point(0, 0);
+		float viewSize = (width < height) ? width : height;
+		q.x = (int) Math.round(p.x / gm.size * viewSize);
+		q.y = (int) Math.round(p.y / gm.size * viewSize);
+		return q;
+	}
+
+	/**
+	 * toModelCoords(x) is used to convert mouse locations to positions in the
+	 * model so that the avatar position in the model can be changed correctly
+	 * 
+	 * @param x
+	 *            position in pixels in view
+	 * @return position in model coordinates
+	 */
+	public float toModelCoords(float x) {
+		float viewSize = (width < height) ? width : height;
+		return x * gm.size / viewSize;
+	}
+
+	public PointF toModelCoords(PointF p) {
+		PointF q = new PointF(0f, 0f);
+		float viewSize = (width < height) ? width : height;
+		q.x = (float) (p.x * gm.size / viewSize);
+		q.y = (float) (p.y * gm.size / viewSize);
+		return q;
+	}
 
 }

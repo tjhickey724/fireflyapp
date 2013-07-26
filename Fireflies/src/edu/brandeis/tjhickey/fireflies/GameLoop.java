@@ -7,9 +7,9 @@ import android.view.View;
 public class GameLoop implements Runnable{
 
 	private GameModel gm; 
-	private FireflyCanvas fc;
+	private GameView fc;
 	
-	public GameLoop(GameModel gm, FireflyCanvas fc) {
+	public GameLoop(GameModel gm, GameView fc) {
 	 this.gm=gm;
 	 this.fc=fc;
 
