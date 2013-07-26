@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
 	
     private void startGame(){
 		GameView gameView = (GameView) this.findViewById(R.id.game_view);
-		gm = new GameModel(100,200);
+		gm = new GameModel(100,10);
 		gameView.setGameModel(gm);
 		gl = new GameLoop(gm,this);
 		Thread t = new Thread(gl);

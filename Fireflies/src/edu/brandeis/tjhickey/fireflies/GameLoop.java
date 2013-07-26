@@ -23,7 +23,7 @@ public class GameLoop implements Runnable{
 			
 			// update the model
 			gm.update();
-			Log.d("loop", "in GameLoop");
+			//Log.d("loop", "in GameLoop");
 			
 			// repaint the gameView, safely
 			gameView.postInvalidate();

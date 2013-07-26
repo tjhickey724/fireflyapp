@@ -20,7 +20,7 @@ public class GameActor {
 	// speed
 	float speed=1;
 	// turning speed
-	float turnspeed = 0.1f;
+	float turnspeed = 0;
 	// species
 	Species species = Species.firefly; 
 	
@@ -62,6 +62,13 @@ public class GameActor {
 		int iy = (int)y;
 		return "["+ix+","+iy+","+active+"]";
 	}
+	
+	public float getvx(){
+		return this.vx;
+	}
 
+	public float getvy(){
+		return this.vy;
+	}
 
 }

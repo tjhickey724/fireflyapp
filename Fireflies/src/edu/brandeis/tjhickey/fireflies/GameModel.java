@@ -65,8 +65,8 @@ public class GameModel {
 			float y = rand.nextFloat()*height;
 			GameActor a = new GameActor(x,y);
 			this.actors.add(a);
-			a.speed = 1;
-			a.radius = 1;
+			a.speed = 2;
+			a.radius = 3;
 			if (numActive> numActors-3){
 				a.species = Species.wasp;
 			}else{
@@ -99,12 +99,14 @@ public class GameModel {
 	 */
 	public void update(){
 		if (paused || gameOver) return;
-		
+		float storedx = avatar.x;
+		float storedy = avatar.y;
 		
 		avatar.x += avatarMovement.x;
 		avatar.y += avatarMovement.y;
 		
-		
+		float avatarVX = (float) (avatar.x-storedx);
+		float avatarVY = (float) (avatar.y-storedy);
 		for(GameActor a:this.actors){
 			if (a.active) {
 				a.update();
@@ -113,16 +115,26 @@ public class GameModel {
 					a.active=false;
 					numActive--;
 					if (a.species==Species.wasp){
-						initActors(); // you lose and have to restart!
+						//initActors(); // you lose and have to restart!
 					}
 				}
 				
 				if (intersects(a,avatar)){
-					a.vx = -a.vx;
-					a.vy = -a.vy;
+					a.vx = avatarVX;
+					a.vy = avatarVY;
+					
 				}
+		
+				//attempt to see if we have a lasting intersection and then move the bubble outside the avatar
+				/*
+				if (Math.sqrt(Math.pow(2,-a.x+avatar.x )+Math.pow(2, -a.y+avatar.y))<avatar.radius){
+					a.x = (float) (a.x+a.x*Math.cos(Math.sqrt(Math.pow(2,-a.x+avatar.x )+Math.pow(2, -a.y+avatar.y))));
+					a.y = (float) (a.y+a.y*Math.sin(Math.sqrt(Math.pow(2,-a.x+avatar.x )+Math.pow(2, -a.y+avatar.y))));
+				}
+				*/
 				
 			} else {
+				
 				//a.x += avatarMovement.x;
 				//a.y += avatarMovement.y;
 			}
@@ -172,6 +184,41 @@ public class GameModel {
 		float d = (float) Math.sqrt(dx*dx+dy*dy);
 		return (d < a.radius + b.radius);
 	}
-
-
+	
+	public void collision (GameActor a, GameActor b){
+		double xDist, yDist;
+        xDist = a.x - b.x;
+        yDist = a.y - b.y;
+        double distSquared = xDist * xDist + yDist * yDist;
+        // Check the squared distances instead of the the distances, same
+        // result, but avoids a square root.
+        if (distSquared <= (a.radius + b.radius) * (a.radius + b.radius)) {
+                double speedXocity = b.vx - a.vx;
+                double speedYocity = b.vy - a.vy;
+                double dotProduct = xDist * speedXocity + yDist * speedYocity;
+                // Neat vector maths, used for checking if the objects moves towards
+                // one another.
+                if (dotProduct > 0) {
+                        double collisionScale = dotProduct / distSquared;
+                        double xCollision = xDist * collisionScale;
+                        double yCollision = yDist * collisionScale;
+                        // The Collision vector is the speed difference projected on the
+                        // Dist vector,
+                        // thus it is the component of the speed difference needed for
+                        // the collision.
+                  
+                        a.vx += (xCollision);
+                        a.vy += (yCollision);
+                        b.vx -= (xCollision);
+                        b.vy -= (yCollision);
+                        
+                }
+               
+                
+                
+        }
 }
+	}
+
+
+

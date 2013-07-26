@@ -73,7 +73,7 @@ public class GameView extends View {
 		drawActors(canvas);
 		drawActor(canvas,gm.avatar);
 		drawActor(canvas,gm.hole);
-		Log.d("main","drawing the view");
+		//Log.d("main","drawing the view");
 		canvas.drawText(""+System.nanoTime(),50,50,wPaint);
 	}
 	
