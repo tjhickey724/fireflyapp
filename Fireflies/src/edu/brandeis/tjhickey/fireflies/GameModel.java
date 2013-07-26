@@ -166,7 +166,7 @@ public class GameModel {
 	 * @param b
 	 * @return
 	 */
-	public boolean intersects(GameActor a, GameActor b){
+	public synchronized boolean intersects(GameActor a, GameActor b){
 		float dx=a.x-b.x;
 		float dy = a.y-b.y;
 		float d = (float) Math.sqrt(dx*dx+dy*dy);
