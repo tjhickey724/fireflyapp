@@ -19,7 +19,7 @@ public class GameLoop implements Runnable{
 				mainActivity.findViewById(R.id.game_view);
 
 		while(true){
-			if (gm.gameOver) return; // end the loop
+			if (gm.isStopped()) return; // end the loop
 			
 			// update the model
 			gm.update();
@@ -28,17 +28,6 @@ public class GameLoop implements Runnable{
 			// repaint the gameView, safely
 			gameView.postInvalidate();
 			
-			/*
-			// which is roughly equivalent to the following
-			mainActivity.runOnUiThread(
-				new Runnable(){
-				public void run(){
-					game_view.invalidate();
-				}
-			});
-			*/
-		
-
 			// sleep for 0.05 seconds
 			try{
 				Thread.sleep(50l);

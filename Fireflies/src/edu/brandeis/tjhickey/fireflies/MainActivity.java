@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
 		gameView.setGameModel(gm);
 		gl = new GameLoop(gm,this);
 		Thread t = new Thread(gl);
-		gm.paused = false;
+		gm.start(); 
 		t.start();
     }
 
@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 	@Override
 	public void onStop(){
 		super.onStop();
-		gm.gameOver = true;
+		gm.stop(); 
 	}
 	
 
