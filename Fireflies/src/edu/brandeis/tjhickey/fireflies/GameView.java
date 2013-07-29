@@ -73,7 +73,7 @@ public class GameView extends View {
 		drawActors(canvas);
 		drawActor(canvas,gm.avatar);
 		Log.d("main","drawing the view");
-		canvas.drawText(""+System.nanoTime(),50,50,wPaint);
+		canvas.drawText(""+gm.score,50,50,wPaint);
 	}
 	
 	private void drawActors(Canvas canvas){
@@ -155,7 +155,7 @@ public class GameView extends View {
 	
 	
 	
-	// The Ôactive pointerÕ is the one currently moving our object.
+	// The ï¿½active pointerï¿½ is the one currently moving our object.
 	private int mActivePointerId = MotionEvent.INVALID_POINTER_ID;
 	private float mLastTouchX,mLastTouchY;
 	private float mPosX,mPosY;

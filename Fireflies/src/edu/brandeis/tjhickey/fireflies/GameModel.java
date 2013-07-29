@@ -27,6 +27,7 @@ public class GameModel {
 	
 	int numActors;
 	int numActive;
+	int score=5;
 
 	private Random rand = new Random();
 	
@@ -107,7 +108,9 @@ public class GameModel {
 				if (intersects(a,avatar)) {
 					a.active=false;
 					numActive--;
-					if (a.species==Species.wasp){
+					score--;
+					if (score==0){
+						score=5;
 						initActors(); // you lose and have to restart!
 					}
 				}
