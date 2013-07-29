@@ -106,9 +106,8 @@ public class GameModel {
 				a.update();
 				keepOnBoard(a);
 				if (intersects(a,avatar)) {
-					a.active=false;
-					numActive--;
-					score--;
+					//bouncing code goes here
+					a.y = -a.y;a.vy = -a.vy;
 					if (score==0){
 						score=5;
 						initActors(); // you lose and have to restart!
@@ -144,7 +143,7 @@ public class GameModel {
 			a.vx = -a.vx;
 		}
 		if (a.y<0) {
-			a.y = -a.y;a.vy = -a.vy;
+			score--;
 		}else if (a.y > height){
 			a.y = height - (a.y-height);
 			a.vy=-a.vy;
