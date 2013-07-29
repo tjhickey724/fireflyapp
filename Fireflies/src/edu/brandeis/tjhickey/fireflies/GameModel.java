@@ -63,14 +63,11 @@ public class GameModel {
 			this.actors.add(a);
 			a.speed = 1;
 			a.radius = 1;
-			if (numActive> numActors-3){
 				a.species = Species.wasp;
-			}else{
-				a.species = Species.firefly;
 				numActive++;
 			}
 		}	
-	}
+	
 	
 	
 	public void start(){
@@ -107,8 +104,7 @@ public class GameModel {
 				keepOnBoard(a);
 				if (intersects(a,avatar)) {
 					//bouncing code goes here
-					a.y = -a.y;a.vy = -a.vy;
-					if (score==0){
+					if (score<=0){
 						score=5;
 						initActors(); // you lose and have to restart!
 					}
@@ -143,7 +139,9 @@ public class GameModel {
 			a.vx = -a.vx;
 		}
 		if (a.y<0) {
+			a.active=false;
 			score--;
+			
 		}else if (a.y > height){
 			a.y = height - (a.y-height);
 			a.vy=-a.vy;
