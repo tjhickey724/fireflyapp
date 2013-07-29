@@ -110,7 +110,7 @@ public class GameModel {
 					a.active=false;
 					numActive--;
 					if (a.species==Species.wasp){
-						repell();
+						collision();
 					}
 				}
 			} else {
@@ -129,7 +129,7 @@ public class GameModel {
 			gameOver=true;
 	}
 	
-	public void repell()
+	public void collision()
 	{
 		for(GameActor a:this.actors){
 			if(!a.active){
