@@ -8,7 +8,7 @@ package edu.brandeis.tjhickey.fireflies;
  */
 public class GameActor {
 	// size
-	float radius = 1;
+	float radius = 2;
 	// position
 	float x;
 	float y;

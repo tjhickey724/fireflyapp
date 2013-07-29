@@ -47,23 +47,23 @@ public class GameView extends View {
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
 		mPaint.setStyle(Style.FILL);
-		mPaint.setColor(Color.BLUE);
+		mPaint.setColor(Color.GREEN);
 		
 		fPaint = new Paint();
 		fPaint.setAntiAlias(true);
 		fPaint.setStyle(Style.FILL);
-		fPaint.setColor(Color.GREEN);
+		fPaint.setColor(Color.WHITE);
 		
 		wPaint = new Paint();
 		wPaint.setAntiAlias(true);
 		wPaint.setStyle(Style.FILL);
-		wPaint.setColor(Color.RED);
+		wPaint.setColor(Color.YELLOW);
 		wPaint.setTextSize(50f);
 		
 		aPaint = new Paint();
 		aPaint.setAntiAlias(true);
 		aPaint.setStyle(Style.STROKE);
-		aPaint.setColor(Color.WHITE);
+		aPaint.setColor(Color.BLACK);
 		
 	}
 	
@@ -73,7 +73,7 @@ public class GameView extends View {
 		drawActors(canvas);
 		drawActor(canvas,gm.avatar);
 		Log.d("main","drawing the view");
-		canvas.drawText(""+System.nanoTime(),50,50,wPaint);
+		canvas.drawText(""+gm.score,50,50,wPaint);
 	}
 	
 	private void drawActors(Canvas canvas){
