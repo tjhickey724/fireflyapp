@@ -4,17 +4,40 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class MainActivity extends Activity {
+	GameModel gm;
+	GameLoop gl;
+	Button b;
 
-	GameController gameController;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		gameController = (GameController) this.findViewById(R.id.game_controller );
+		startGame();
+		b = (Button) this.findViewById(R.id.restartbutton);
+		b.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				startGame();
+			}
+			
+		});
 	}
+	
+    private void startGame(){
+		GameView gameView = (GameView) this.findViewById(R.id.game_view);
+		gm = new GameModel(100,10);
+		gameView.setGameModel(gm);
+		gl = new GameLoop(gm,this);
+		Thread t = new Thread(gl);
+		gm.paused = false;
+		t.start();
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -25,8 +48,8 @@ public class MainActivity extends Activity {
 	
 	@Override
 	public void onStop(){
-		super.onStop();		
-		gameController.stop();
+		super.onStop();
+		gm.gameOver = true;
 	}
 	
 
