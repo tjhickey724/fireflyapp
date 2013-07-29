@@ -7,38 +7,26 @@ import android.view.View;
 public class GameLoop implements Runnable{
 
 	private GameModel gm; 
-	private MainActivity mainActivity;
+	private GameView gv;
 	
-	public GameLoop(GameModel gm, MainActivity m) {
+	public GameLoop(GameModel gm, GameView gv) {
 	 this.gm=gm;
-	 this.mainActivity=m;
+	 this.gv=gv;
+
 	}
 
 	public void run(){
-		final View gameView = 
-				mainActivity.findViewById(R.id.game_view);
+
 
 		while(true){
-			if (gm.gameOver) return; // end the loop
+			if (gm.isStopped()) return; // end the loop
 			
 			// update the model
 			gm.update();
-			Log.d("loop", "in GameLoop");
 			
 			// repaint the gameView, safely
-			gameView.postInvalidate();
+			gv.redraw();
 			
-			/*
-			// which is roughly equivalent to the following
-			mainActivity.runOnUiThread(
-				new Runnable(){
-				public void run(){
-					game_view.invalidate();
-				}
-			});
-			*/
-		
-
 			// sleep for 0.05 seconds
 			try{
 				Thread.sleep(50l);

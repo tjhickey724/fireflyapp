@@ -6,25 +6,15 @@ import android.util.Log;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
-	GameModel gm;
-	GameLoop gl;
 
+	GameController gameController;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		startGame();
+		gameController = (GameController) this.findViewById(R.id.game_controller );
 	}
-	
-    private void startGame(){
-		GameView gameView = (GameView) this.findViewById(R.id.game_view);
-		gm = new GameModel(100,200);
-		gameView.setGameModel(gm);
-		gl = new GameLoop(gm,this);
-		Thread t = new Thread(gl);
-		gm.paused = false;
-		t.start();
-    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -35,8 +25,8 @@ public class MainActivity extends Activity {
 	
 	@Override
 	public void onStop(){
-		super.onStop();
-		gm.gameOver = true;
+		super.onStop();		
+		gameController.stop();
 	}
 	
 
