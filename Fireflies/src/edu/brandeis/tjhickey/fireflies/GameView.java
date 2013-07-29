@@ -73,7 +73,7 @@ public class GameView extends View {
 		drawActors(canvas);
 		drawActor(canvas,gm.avatar);
 		Log.d("main","drawing the view");
-		canvas.drawText(""+System.nanoTime(),50,50,wPaint);
+		canvas.drawText("Score: "+gm.score,50,50,wPaint);
 	}
 	
 	private void drawActors(Canvas canvas){
@@ -83,6 +83,10 @@ public class GameView extends View {
 	}
 	
 	private void drawActor(Canvas canvas, GameActor a){
+		if(!a.active){
+			return;
+		}
+		
 		this.tempPoint.x = (float)a.x;
 		this.tempPoint.y = (float)a.y;
 		Point r = this.toViewCoords(tempPoint);
@@ -90,7 +94,7 @@ public class GameView extends View {
 			this.tempPaint = fPaint;
 		}else if (a.species == Species.wasp){
 			this.tempPaint = wPaint;
-		} else {
+		}else {
 			this.tempPaint = aPaint;
 		}
 				

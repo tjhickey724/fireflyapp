@@ -18,6 +18,7 @@ public class GameModel {
 	float width;
 	float height;
 	float size;
+	int score = 10;
 	
 	List<GameActor> actors;
 	GameActor avatar;
@@ -62,7 +63,7 @@ public class GameModel {
 			GameActor a = new GameActor(x,y);
 			this.actors.add(a);
 			a.speed = 1;
-			a.radius = 1;
+			a.radius = 3;
 			
 				a.species = Species.wasp;
 				numActive++;
@@ -105,11 +106,12 @@ public class GameModel {
 				a.update();
 				keepOnBoard(a);
 				if (intersects(a,avatar)) {
-					a.active=false;
+					//a.active=false;
 					numActive--;
-					if (a.species==Species.wasp){
+					//score--;
+					//if (a.species==Species.wasp){
 						collision();
-					}
+					//}
 				}
 			} else {
 				a.x += avatarMovement.x;
@@ -129,9 +131,13 @@ public class GameModel {
 	
 	public void collision()
 	{
+		
+		
 		for(GameActor a:this.actors){
-			if(!a.active){
-				a.active=true;
+			
+			
+			if(a.active){
+				
 				float dx=a.x-avatar.x;
 				float dy=a.y-avatar.y;
 				a.vx=dx*3;
@@ -157,8 +163,8 @@ public class GameModel {
 		if (a.y<0) {
 			a.y = -a.y;a.vy = -a.vy;
 		}else if (a.y > height){
-			a.y = height - (a.y-height);
-			a.vy=-a.vy;
+			score--;
+			a.active = false;
 		}
 	}
 	
@@ -174,6 +180,7 @@ public class GameModel {
 		float d = (float) Math.sqrt(dx*dx+dy*dy);
 		return (d < a.radius + b.radius);
 	}
+
 
 
 }
