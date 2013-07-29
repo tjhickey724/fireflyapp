@@ -27,6 +27,7 @@ public class GameModel {
 	
 	int numActors;
 	int numActive;
+	private int padx;
 
 	private Random rand = new Random();
 	
@@ -34,14 +35,15 @@ public class GameModel {
 
 
 	public GameModel(float size, int numActors) {
+		
 		this.width =size;
 		this.height = size;
 		this.size=size;
-		
+		setPadx((int) (this.width/2));
 		this.numActors = numActors;
 		initActors();
 		
-		this.avatar = new GameActor(size/2,size/2);
+		this.avatar = new GameActor(size/2,getPadx());
 		avatar.species = Species.avatar;
 		this.avatar.radius=6;
 		
@@ -159,6 +161,12 @@ public class GameModel {
 		float dy = a.y-b.y;
 		float d = (float) Math.sqrt(dx*dx+dy*dy);
 		return (d < a.radius + b.radius);
+	}
+	public int getPadx() {
+		return padx;
+	}
+	public void setPadx(int padx) {
+		this.padx = padx;
 	}
 
 

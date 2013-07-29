@@ -18,7 +18,7 @@ import android.view.MotionEvent;
 /**
  * a GameView is a 2D view of a GameModel
  * the aspect of the view and model may be different
- * Since the GameModel is a square space, the GameView takes
+ * Since the GameModel is a square s pace, the GameView takes
  * the minimum of the width and height of the JPanel and uses
  * that to scale the GameModel to the Viewing window.
  * Calling repaint() on the GameView will cause it to render

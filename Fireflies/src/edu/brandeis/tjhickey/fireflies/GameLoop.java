@@ -23,6 +23,7 @@ public class GameLoop implements Runnable{
 			
 			// update the model
 			gm.update();
+			gm.avatar.x= mainActivity.getpadx();
 			Log.d("loop", "in GameLoop");
 			
 			// repaint the gameView, safely
@@ -41,7 +42,7 @@ public class GameLoop implements Runnable{
 
 			// sleep for 0.05 seconds
 			try{
-				Thread.sleep(50l);
+				Thread.sleep(50L);
 			}catch(Exception e){
 				System.out.println("In game loop:"+ e);
 			}
